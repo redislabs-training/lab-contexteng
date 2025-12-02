@@ -9,6 +9,7 @@
 ✨ A comprehensive course exploring context engineering using Redis and LangChain by building a progressively more complex agent ✨
 
 </div>
+
 ---
 
 > **📢 Note:** This course is currently in **BETA**. Additional components and stages will be released in the near future, so please check back regularly for updates. This course will eventually be migrated as a lab to [Redis University](https://university.redis.com/).
