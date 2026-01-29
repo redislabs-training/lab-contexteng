@@ -1,7 +1,7 @@
 <div align="center">
 <img src="/public/logo.svg" alt="" width="300px">
 
-# [BETA] Context Engineering with Redis & Langchain 
+# Context Engineering with Redis & Langchain 
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 ![Language](https://img.shields.io/github/languages/top/redis-developer/redis-ai-resources)
@@ -9,12 +9,6 @@
 ✨ A comprehensive course exploring context engineering using Redis and LangChain by building a progressively more complex agent ✨
 
 </div>
-
----
-
-> **📢 Note:** This course is currently in **Development**. Additional components and stages will be released in the near future, so please check back regularly for updates. This course will eventually be migrated as a lab to [Redis University](https://university.redis.com/).
-
----
 
 ## Key Technologies
 
@@ -24,12 +18,10 @@
 | **[RedisVL](https://github.com/redis/redis-vl-python)** | Vector search library with FilterQuery |
 | **[LangGraph](https://github.com/langchain-ai/langgraph)** | Stateful agent workflows |
 | **[LangChain](https://github.com/langchain-ai/langchain)** | LLM application framework |
-| **[LangSmith](https://www.langchain.com/langsmith/observability)** | Agent Observability platform |
 | **[Redis Agent Memory Server](https://github.com/redis/agent-memory-server)** | Working and long-term memory management for agents |
 | **[OpenAI](https://openai.com/)** | Language model for reasoning |
 
 ---
-
 ## Progressive Agents
 
 The `progressive_agents/` directory contains a learning path from basic RAG to production-ready agents:
@@ -39,33 +31,21 @@ graph LR
     S0[Stage 0: <br/>System Context] -->
     S1[Stage 1: <br/>Baseline RAG] --> S2[Stage 2: <br/>Context Engineered RAG]
     S2 --> S3[Stage 3: <br/>From RAG to Agent]
-    S3 --> S4[Stage 4: <br/>NER + Hybrid Search]
-    S4 --> S4R[Stage 4R: <br/>Upgrade to ReAct Agent]
-    S4R --> S5[Stage 5<br/>Working Memory]
+    S3 --> S4[Stage 4: <br/>React Agent + Hybrid Search]
+    S4 --> S5[Stage 5<br/>Working Memory]
     S5 --> S6[Stage 6<br/>Long-term Memory]
 ```
 
-| Stage | Key Feature | Overview | Status |
-|-------|-------------|----------------|--------|
-| **Intro** | Getting Acquainted | An overview of context engineering | Available |
-| **0** | System Context | Constructing effective system prompts | Coming Soon |
-| **1** | Baseline RAG | Exploring a basic RAG that consumes Raw JSON context | Agent Code Avaliable, Notebook Coming Soon |
-| **2** | Context Engineering | Context engineered RAG with 50% less token usage | Agent Code Avaliable, Notebook Coming Soon |
-| **3** | Full Agent | A full LangGraph-based agent with intent classification, quality and eval | Coming Soon |
-| **4** | Hybrid Search | Adding NER + FilterQuery for exact course codes | Coming Soon |
-| **4R** | + ReAct | Visible reasoning trace | Coming Soon |
-| **5** | Working Memory | Session-based conversation history | Coming Soon |
-| **6** | Long-term Memory | Complete agent: memory + reasoning + tools | Coming Soon |
-
----
-
-## Getting Started
-
-To begin exploring context engineering with Redis and LangChain:
-
-1. **Prerequisites**: You'll need an OpenAI API key. Get one at [platform.openai.com](https://platform.openai.com/api-keys).
-
-2. **Start with the first notebook**: Start with the first notebook (01) in the `section-1-context-engineering-fundamentals` directory.
+| Stage | Key Feature | Overview |
+|-------|-------------|----------------|
+| **Intro** | Getting Acquainted | An overview of context engineering |
+| **0** | System Context | Constructing effective system prompts | 
+| **1** | Baseline RAG | Exploring a basic RAG that consumes Raw JSON context |
+| **2** | Data Engineering | Data engineered RAG with 50% less token usage |
+| **3** | Full Agent | A full LangGraph-based agent with intent classification, quality and eval |
+| **4** | Hybrid Search + ReAct | Visible reasoning trace and hybrid search |
+| **5** | Working Memory | Session-based conversation history |
+| **6** | Long-term Memory | Complete agent: memory + reasoning + tools |
 
 ---
 
