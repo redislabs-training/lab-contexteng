@@ -15,9 +15,5 @@ apt-get install -y nodejs
 rm -rf node_modules package-lock.json
 npm install
 
-#npm run build
-
-#cp -r ./doc/ ./dist/client/
-
-#bash create_dist.sh
+bash create_dist.sh
 
