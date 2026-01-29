@@ -1,3 +1,3 @@
-npm run build
+sudo npm run build
 cp -r ./doc/ ./dist/client/
 
