@@ -7,8 +7,7 @@ export DOMAIN=$DOMAIN
 export HOSTNAME=$HOSTNAME
 export HOST_IP=$(hostname -I | awk '{print $1}')
 
-export LITELLM_MASTER_KEY=sk-ps-key
-export GENAI_WKSHP_OPENAI_API_KEY=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
+export LITELLM_MASTER_KEY=sk-super-secret-key-for-ps
 
 if [[ -n $VERTEX_SA_KEY ]];
 then
