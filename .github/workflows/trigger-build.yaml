@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       image_version:
-        description: '1.0.2'
+        description: 'Image version - format X.Y.Z (e.g., 0.1.0)'
         required: true
         type: string
 
