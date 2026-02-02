@@ -20,7 +20,7 @@ services:
       - "10889:8888"
     volumes:
       - ./jupyter-config/jupyter_server_config.py:/home/jovyan/.jupyter/jupyter_server_config.py  
-      - ./materials/:/home/jovyan/work/materials
+      - ./materials/${LAB_MODE}:/home/jovyan/work/materials
       - ./notebook-config/custom.css:/home/jovyan/.jupyter/custom/custom.css
       - ./notebook-config/overrides.json:/opt/conda/share/jupyter/lab/settings/overrides.json
     environment:
