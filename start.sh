@@ -19,6 +19,15 @@ then
   rm vertex_sa_in.txt
 fi
 
+rm -rf ./dist
+if [ "$LAB_MODE" = "ws" ]; then
+  cp -r ./ws/ ./dist/
+  echo "Copied ./ws to ./dist/"
+else
+  cp -r ./all/ ./dist/
+  echo "Copied ./all to ./dist/"
+fi
+
 docker-compose up -d --scale jupyter=0 --scale docs=0
 
 sudo docker exec litellm wget 'http://localhost:4000/key/generate' \
