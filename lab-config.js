@@ -26,7 +26,7 @@ export const LAB_CONFIG = {
         ]
     },
     workshop: {
-        title: 'Redis Workshop:Context Engineering with Redis & LangChain',
+        title: 'Redis Workshop: Context Engineering with Redis & LangChain',
         hero: {
             tagline: 'Context Engineering with Redis & LangChain',
             subtitle: 'Engineer every layer of context as you evolve a course advisor agent from baseline RAG to a full agent',
