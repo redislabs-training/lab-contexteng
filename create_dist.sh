@@ -1,7 +1,7 @@
 export LAB_MODE=ws
 npm run build
 cp -r ./doc/ ./dist/client/
-cp -r ./dist/ ./rag/
+cp -r ./dist/ ./ws/
 rm -rf ./dist
 
 unset LAB_MODE

@@ -22,9 +22,11 @@ fi
 rm -rf ./dist
 if [ "$LAB_MODE" = "ws" ]; then
   cp -r ./ws/ ./dist/
+  export MATERIALS_PATH=ws
   echo "Copied ./ws to ./dist/"
 else
   cp -r ./all/ ./dist/
+  export MATERIALS_PATH=university
   echo "Copied ./all to ./dist/"
 fi
 
