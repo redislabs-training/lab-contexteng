@@ -40,7 +40,7 @@ logger = logging.getLogger("stage2-cli")
 # Load environment variables from project root
 from dotenv import load_dotenv
 
-env_path = Path(__file__).resolve().parents[2] / ".env"
+env_path = Path(__file__).resolve().parents[1] / ".env"
 load_dotenv(env_path)
 
 # Import agent module - try relative import first (when running as package),

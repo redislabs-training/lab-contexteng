@@ -64,7 +64,7 @@ def initialize_nodes(manager: CourseManager):
     # Load hierarchical courses
     try:
         data_path = (
-            Path(__file__).parent.parent / "src"
+            Path(__file__).parent.parent.parent / "src"
             / "redis_context_course"
             / "data"
             / "hierarchical"

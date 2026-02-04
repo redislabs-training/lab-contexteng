@@ -15,7 +15,7 @@ import uuid
 from pathlib import Path
 
 # Add parent directory to path
-sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from redis_context_course import CourseManager
 

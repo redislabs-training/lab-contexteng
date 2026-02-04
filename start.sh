@@ -32,6 +32,9 @@ fi
 
 docker-compose up -d --scale jupyter=0 --scale docs=0
 
+echo "Sleeping 5s to allow litellm to start..."
+sleep 5
+
 sudo docker exec litellm wget 'http://localhost:4000/key/generate' \
 --header "Authorization: Bearer $LITELLM_MASTER_KEY" \
 --header 'Content-Type: application/json' \
