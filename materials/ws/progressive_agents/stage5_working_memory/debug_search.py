@@ -10,11 +10,11 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 # Load .env from project root
-env_path = Path(__file__).parent.parent / "src" / ".env"
+env_path = Path(__file__).parent.parent / ".env"
 load_dotenv(env_path)
 
 # Add agent module to path
-sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from agent.setup import setup_agent
 from agent.tools import search_courses
