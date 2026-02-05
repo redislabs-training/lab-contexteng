@@ -32,7 +32,10 @@ fi
 
 docker-compose up -d --scale jupyter=0 --scale docs=0
 
+echo "Waiting for litellm to be ready (healthcheck)..."
+timeout="${LITELLM_READY_TIMEOUT:-100}"
 start_ts=$(date +%s)
+
 while true; do
   if sudo docker exec litellm wget -qO- 'http://localhost:4000/' >/dev/null 2>&1; then
     echo "litellm is ready."
