@@ -32,24 +32,8 @@ fi
 
 docker-compose up -d --scale jupyter=0 --scale docs=0
 
-echo "Waiting for litellm to be ready (healthcheck)..."
-timeout="${LITELLM_READY_TIMEOUT:-600}"
-
-start_ts=$(date +%s)
-while true; do
-  if sudo docker exec litellm wget -qO- 'http://localhost:4000/health' >/dev/null 2>&1; then
-    echo "litellm is ready."
-    break
-  fi
-
-  now_ts=$(date +%s)
-  if [ $((now_ts - start_ts)) -ge "$timeout" ]; then
-    echo "ERROR: litellm not ready after ${timeout}s" >&2
-    exit 1
-  fi
-
-  sleep 1
-done
+echo "Sleeping 100s to allow litellm to start..."
+sleep 100
 
 sudo docker exec litellm wget 'http://localhost:4000/key/generate' \
 --header "Authorization: Bearer $LITELLM_MASTER_KEY" \
