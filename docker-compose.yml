@@ -3,8 +3,6 @@ services:
   redis:
     image: redis:8.0.0
     container_name: redis
-    ports:
-      - "6379:6379"
     restart: always
 
   redis-insight:
@@ -43,17 +41,15 @@ services:
   agent-memory-server:
     image: ghcr.io/redis/agent-memory-server:0.12.3
     container_name: agent-memory-server
-    ports:
-      - "8088:8000"
     environment:
       OPENAI_API_KEY: ${GENAI_WKSHP_OPENAI_API_KEY}
       #   - OPENAI_API_BASE=http://litellm:4000
-      REDIS_URL: redis://host.docker.internal:6379
+      REDIS_URL: redis://redis:6379
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/v1/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8088/v1/health"]
       interval: 5s
       timeout: 10s
-      retries: 20
+      retries: 20 
 
   docs:
     image: httpd:2.4.63
