@@ -57,7 +57,7 @@ def get_memory_client() -> MemoryAPIClient:
     global _memory_client
     if _memory_client is None:
         config = MemoryClientConfig(
-            base_url=os.getenv("AGENT_MEMORY_URL", "http://localhost:8088"),
+            base_url=os.getenv("AGENT_MEMORY_URL", "http://agent-memory-server:8000"),
             default_namespace="course_qa_agent",
         )
         _memory_client = MemoryAPIClient(config=config)
