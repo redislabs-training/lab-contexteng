@@ -107,7 +107,7 @@ async def initialize_course_manager(
         Initialized CourseManager instance
     """
     if redis_url is None:
-        redis_url = os.getenv("REDIS_URL", "redis://localhost:6379")
+        redis_url = os.getenv("REDIS_URL", "redis://redis:6379")
 
     logger.info(f"Initializing CourseManager with Redis URL: {redis_url}")
     logger.info(f"📇 Using index: {PROGRESSIVE_AGENTS_INDEX}")

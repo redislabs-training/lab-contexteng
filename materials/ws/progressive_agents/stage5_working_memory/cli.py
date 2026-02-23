@@ -112,7 +112,7 @@ class MemoryAugmentedCLI:
             sys.exit(1)
 
         # Check for Agent Memory Server
-        memory_url = os.getenv("AGENT_MEMORY_URL", "http://localhost:8088")
+        memory_url = os.getenv("AGENT_MEMORY_URL", "http://agent-memory-server:8000")
         if self.verbose:
             print(f"🔗 Agent Memory Server: {memory_url}")
 
