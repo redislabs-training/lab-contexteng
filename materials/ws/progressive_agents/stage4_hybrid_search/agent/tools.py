@@ -2,9 +2,10 @@
 Tools for the Stage 4 ReAct Course Q&A Agent workflow.
 
 This version includes:
-- Hybrid search with NER
-- Correct hierarchical data path
+- True hybrid search using HybridQuery (FT.HYBRID command - Redis 8.4+)
+- RRF (Reciprocal Rank Fusion) combination method (industry best practice)
 - FilterQuery for exact course code matching
+- Hierarchical data with progressive disclosure
 """
 
 import asyncio
@@ -23,7 +24,7 @@ from redis_context_course.hierarchical_models import (
     HierarchicalCourse,
 )
 from redis_context_course.models import Course
-from redisvl.query import FilterQuery
+from redisvl.query import FilterQuery, HybridQuery
 from redisvl.query.filter import Tag
 
 # Configure logger
@@ -33,7 +34,6 @@ logger = logging.getLogger("course-qa-workflow")
 course_manager: Optional[CourseManager] = None
 hierarchical_courses: List[HierarchicalCourse] = []
 context_assembler = HierarchicalContextAssembler()
-
 
 def initialize_tools(manager: CourseManager):
     """
@@ -187,13 +187,27 @@ async def search_courses_async(
     query: str,
     top_k: int = 5,
     intent: str = "GENERAL",
-    search_strategy: str = "semantic_only",
+    search_strategy: str = "hybrid",
     extracted_entities: Optional[Dict[str, Any]] = None,
+    combination_method: str = "RRF",
+    linear_alpha: float = 0.3,
 ) -> str:
     """
-    Async search for courses using hybrid search with NER.
+    Async search for courses using true hybrid search (FT.HYBRID command).
 
-    Uses FilterQuery for exact course code matching.
+    Search strategies:
+    - "hybrid": True hybrid search combining text (BM25) + vector search
+    - "exact_match": FilterQuery for exact course code matching
+    - "semantic_only": Pure vector/semantic search
+
+    Args:
+        query: Search query text
+        top_k: Number of results to return
+        intent: Query intent (GENERAL, SPECIFIC, etc.)
+        search_strategy: "hybrid", "exact_match", or "semantic_only"
+        extracted_entities: NER-extracted entities (course_codes, departments, etc.)
+        combination_method: "RRF" (recommended) or "LINEAR"
+        linear_alpha: Weight for text score when using LINEAR (0.3 = 30% text, 70% vector)
     """
     global course_manager, hierarchical_courses
 
@@ -205,11 +219,10 @@ async def search_courses_async(
     basic_results = []
     extracted_entities = extracted_entities or {}
 
-    # Handle exact match strategy with FilterQuery
+    # Strategy 1: Exact match with FilterQuery
     if search_strategy == "exact_match" and extracted_entities.get("course_codes"):
         logger.info(f"   Using exact match for course codes: {extracted_entities['course_codes']}")
         for course_code in extracted_entities["course_codes"]:
-            # Use FilterQuery for exact course code matching
             filter_query = FilterQuery(
                 filter_expression=Tag("course_code") == course_code,
                 return_fields=[
@@ -230,8 +243,57 @@ async def search_courses_async(
                 if course:
                     basic_results.append(course)
                     logger.info(f"   Found exact match: {course_code}")
+
+    # Strategy 2: True hybrid search (text + vector with RRF or LINEAR)
+    elif search_strategy == "hybrid":
+        logger.info(f"   Using true hybrid search (FT.HYBRID) with {combination_method} combination")
+
+        # Get query embedding for vector search (uses course_manager.embeddings like university pattern)
+        query_embedding = course_manager.embeddings.embed_query(query)
+
+        # Build HybridQuery with RRF or LINEAR combination
+        hybrid_query_params = {
+            "text": query,
+            "text_field_name": "embedding_text",
+            "vector": query_embedding,
+            "vector_field_name": "embedding",
+            "text_scorer": "BM25STD",
+            "combination_method": combination_method,
+            "num_results": top_k,
+            "return_fields": [
+                "id", "course_code", "title", "description", "department",
+                "major", "difficulty_level", "format", "semester", "year",
+                "credits", "tags", "instructor", "max_enrollment",
+                "current_enrollment", "learning_objectives", "prerequisites",
+                "schedule", "created_at", "updated_at",
+            ],
+        }
+
+        # Add combination-specific parameters
+        if combination_method == "RRF":
+            hybrid_query_params["rrf_window"] = 20
+            hybrid_query_params["rrf_constant"] = 60
+        else:  # LINEAR
+            hybrid_query_params["linear_alpha"] = linear_alpha
+
+        # Add department filter if specified
+        departments = extracted_entities.get("departments", [])
+        if departments:
+            hybrid_query_params["filter_expression"] = Tag("department") == departments[0]
+            logger.info(f"   Filtering by department: {departments[0]}")
+
+        hybrid_query = HybridQuery(**hybrid_query_params)
+        results = course_manager.vector_index.query(hybrid_query)
+        result_list = results if isinstance(results, list) else results.docs
+
+        for result in result_list:
+            course_dict = result if isinstance(result, dict) else result.__dict__
+            course = course_manager._dict_to_course(course_dict)
+            if course:
+                basic_results.append(course)
+
+    # Strategy 3: Pure semantic/vector search
     else:
-        # Fall back to semantic search
         logger.info(f"   Using semantic search")
         results = await course_manager.search_courses(query=query, limit=top_k)
         basic_results = results
@@ -286,10 +348,15 @@ async def search_courses_tool(
     departments: Optional[List[str]] = None,
 ) -> str:
     """
-    Search the Redis University course catalog.
+    Search the Redis University course catalog using true hybrid search.
 
-    Use exact_match strategy for specific course codes.
-    Use hybrid strategy for topic-based searches.
+    Search strategies:
+    - "hybrid" (default): Combines text (BM25) + vector search using RRF fusion
+    - "exact_match": For specific course codes (CS101, etc.)
+    - "semantic_only": Pure vector/semantic search
+
+    The hybrid strategy uses Redis FT.HYBRID command with Reciprocal Rank Fusion (RRF)
+    to combine keyword and semantic search results for best relevance.
     """
     extracted_entities = {
         "course_codes": course_codes or [],
@@ -297,7 +364,7 @@ async def search_courses_tool(
         "information_type": information_type or [],
     }
 
-    # Determine strategy
+    # Determine strategy: use exact_match if course codes provided
     if course_codes and search_strategy != "semantic_only":
         search_strategy = "exact_match"
 
