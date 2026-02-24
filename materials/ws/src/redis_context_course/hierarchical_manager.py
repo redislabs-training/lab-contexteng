@@ -113,7 +113,7 @@ class HierarchicalCourseManager:
                         "name": "embedding",
                         "type": "vector",
                         "attrs": {
-                            "dims": 1536,  # OpenAI ada-002 dimensions
+                            "dims": 1536,  # OpenAI text-embedding-3-small dimensions
                             "algorithm": "hnsw",
                             "distance_metric": "cosine",
                         },
@@ -170,7 +170,7 @@ class HierarchicalCourseManager:
         client = _get_openai_client()
 
         response = client.embeddings.create(
-            model="text-embedding-ada-002", input=summary.embedding_text
+            model="text-embedding-3-small", input=summary.embedding_text
         )
         embedding = response.data[0].embedding
 
@@ -235,7 +235,7 @@ class HierarchicalCourseManager:
         # Get embedding for query
         client = _get_openai_client()
 
-        response = client.embeddings.create(model="text-embedding-ada-002", input=query)
+        response = client.embeddings.create(model="text-embedding-3-small", input=query)
         query_embedding = response.data[0].embedding
 
         # Create vector query
