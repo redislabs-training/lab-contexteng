@@ -22,6 +22,7 @@ Usage:
 import asyncio
 import atexit
 import logging
+import os
 import sys
 from pathlib import Path
 
@@ -37,20 +38,15 @@ logging.basicConfig(
 
 logger = logging.getLogger("stage2-cli")
 
-# Load environment variables from project root
-from dotenv import load_dotenv
+# Map OPENAI_API_BASE to OPENAI_BASE_URL for LiteLLM compatibility
+if "OPENAI_API_BASE" in os.environ:
+    os.environ["OPENAI_BASE_URL"] = os.environ["OPENAI_API_BASE"]
 
-env_path = Path(__file__).resolve().parents[1] / ".env"
-load_dotenv(env_path)
+# Add src module to path for redis_context_course imports
+sys.path.insert(0, str(Path(__file__).parent.parent.parent / "src"))
 
-# Import agent module - try relative import first (when running as package),
-# fall back to direct import (when running python cli.py from this directory)
-try:
-    from .agent import cleanup_courses, initialize_state, setup_agent
-    from .agent.workflow import create_workflow
-except ImportError:
-    from agent import cleanup_courses, initialize_state, setup_agent
-    from agent.workflow import create_workflow
+from agent import cleanup_courses, initialize_state, setup_agent
+from agent.workflow import create_workflow
 
 
 class ContextEngineeredCLI:

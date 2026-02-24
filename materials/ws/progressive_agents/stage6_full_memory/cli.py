@@ -29,29 +29,15 @@ if _quiet_mode:
     logging.getLogger("httpx").setLevel(logging.CRITICAL)
     logging.getLogger("redisvl.index.index").setLevel(logging.CRITICAL)
 
-# Load environment variables from .env file
-from dotenv import load_dotenv
+# Map OPENAI_API_BASE to OPENAI_BASE_URL for LiteLLM compatibility
+if "OPENAI_API_BASE" in os.environ:
+    os.environ["OPENAI_BASE_URL"] = os.environ["OPENAI_API_BASE"]
 
-# Load .env from repository root (2 levels up from this file)
-env_path = Path(__file__).parent.parent.parent / ".env"
-if not load_dotenv(env_path):
-    # Fallback: try to find .env in current directory or parent directories
-    current = Path.cwd()
-    for _ in range(5):  # Try up to 5 levels up
-        test_path = current / ".env"
-        if test_path.exists():
-            load_dotenv(test_path)
-            break
-        current = current.parent
+# Add src module to path for redis_context_course imports
+sys.path.insert(0, str(Path(__file__).parent.parent.parent / "src"))
 
-# Import agent module - try relative import first (when running as package),
-# fall back to direct import (when running python cli.py from this directory)
-try:
-    from .agent import create_workflow, run_agent_async, setup_agent
-    from .agent.setup import cleanup_courses
-except ImportError:
-    from agent import create_workflow, run_agent_async, setup_agent
-    from agent.setup import cleanup_courses
+from agent import create_workflow, run_agent_async, setup_agent
+from agent.setup import cleanup_courses
 
 # If quiet mode, ensure all loggers are suppressed after imports
 if _quiet_mode:
