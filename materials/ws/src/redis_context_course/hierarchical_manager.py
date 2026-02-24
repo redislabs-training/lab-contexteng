@@ -10,10 +10,20 @@ This demonstrates context budget management and advanced Section 2 techniques.
 
 import json
 import logging
+import os
 from typing import List, Optional, Tuple
 
 from openai import OpenAI
 from redis import Redis
+
+
+def _get_openai_client() -> OpenAI:
+    """Get OpenAI client configured for LiteLLM proxy if available."""
+    base_url = os.environ.get("OPENAI_BASE_URL") or os.environ.get("OPENAI_API_BASE")
+    return OpenAI(
+        api_key=os.environ.get("OPENAI_API_KEY"),
+        base_url=base_url,
+    )
 from redisvl.index import SearchIndex
 from redisvl.query import VectorQuery
 from redisvl.query.filter import Tag
@@ -157,7 +167,7 @@ class HierarchicalCourseManager:
             summary.generate_embedding_text()
 
         # Get embedding from OpenAI
-        client = OpenAI()
+        client = _get_openai_client()
 
         response = client.embeddings.create(
             model="text-embedding-ada-002", input=summary.embedding_text
@@ -223,7 +233,7 @@ class HierarchicalCourseManager:
             List of course summaries
         """
         # Get embedding for query
-        client = OpenAI()
+        client = _get_openai_client()
 
         response = client.embeddings.create(model="text-embedding-ada-002", input=query)
         query_embedding = response.data[0].embedding

@@ -25,3 +25,6 @@ redisinsight/db/*.log.*
 !redisgears.linux-bionic-x64.1.0.7.zip
 __pycache__
 *.iml
+
+# Comparison documentation (local analysis only)
+comparison/
