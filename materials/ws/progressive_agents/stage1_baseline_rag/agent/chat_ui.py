@@ -1,15 +1,16 @@
 """
 Reusable chat UI widget for Jupyter notebooks.
 
-Based on ipywidgets, provides a clean chat interface that can be
-connected to any async callback function.
+This module provides a clean, widget-based chat interface that can be used
+with any async callback function. Based on the pattern from Redis technical seminars.
 """
 
+import asyncio
 from datetime import datetime
 from typing import Awaitable, Callable
 
 import ipywidgets as widgets
-from IPython.display import display
+from IPython.display import Javascript, display
 
 
 def build_chat_ui(send_callback: Callable[[str], Awaitable[str | dict]]):
@@ -18,121 +19,129 @@ def build_chat_ui(send_callback: Callable[[str], Awaitable[str | dict]]):
 
     Args:
         send_callback: Async function that takes a query string and returns
-                      either a string response or a dict with 'text' and optional metadata
+                      either a string response or a dict with keys:
+                      - text: The response text
+                      - elapsed: (optional) Time in seconds
+                      - courses_found: (optional) Number of courses found
     """
-    # Chat history display
     chat_history = widgets.Output(
         layout=widgets.Layout(
-            height="400px",
-            overflow_y="auto",
-            border="1px solid #ccc",
-            padding="10px",
+            border="none",
+            padding="15px",
+            width="100%",
+            height="350px",
+            overflow="scroll",
+            background="#fafafa",
+            box_sizing="border-box",
+            flex="1",
+            display="flex",
+            flex_flow="wrap-reverse",
+            margin="0",
         )
     )
+    chat_history.add_class("chat-scrollbox")
 
-    # Input field
-    input_field = widgets.Text(
-        placeholder="Type your question here...",
-        layout=widgets.Layout(width="85%"),
+    input_container = widgets.HBox(
+        [
+            widgets.Text(
+                value="",
+                placeholder="Ask a question...",
+                layout=widgets.Layout(flex="1", margin="0 10px 0 0"),
+            ),
+            widgets.Button(
+                description="Submit",
+                button_style="primary",
+                layout=widgets.Layout(width="80px"),
+            ),
+        ],
+        layout=widgets.Layout(
+            width="100%",
+            padding="10px",
+            border_top="1px solid #ddd",
+            background="white",
+            flex="0 0 auto",
+        ),
     )
+    input_container.add_class("chat-inputbox")
 
-    # Send button
-    send_button = widgets.Button(
-        description="Send",
-        button_style="primary",
-        layout=widgets.Layout(width="14%"),
-    )
+    question_input = input_container.children[0]
+    submit_button = input_container.children[1]
 
-    # Input row
-    input_row = widgets.HBox(
-        [input_field, send_button],
-        layout=widgets.Layout(width="100%", margin="10px 0"),
-    )
-
-    # Main container
     main_container = widgets.VBox(
-        [chat_history, input_row],
-        layout=widgets.Layout(width="100%", padding="10px"),
+        [chat_history, input_container],
+        layout=widgets.Layout(
+            width="95%",
+            max_width="900px",
+            height="450px",
+            margin="10px auto",
+            border="1px solid #ccc",
+            background="white",
+            border_radius="8px",
+            overflow="hidden",
+            display="flex",
+            flex_flow="column",
+        ),
     )
 
-    def add_message(role: str, content: str, metadata: dict = None):
-        """Add a message to the chat history."""
+    def scroll_to_bottom():
+        display(
+            Javascript(
+                """
+            const out = document.querySelector('.chat-scrollbox');
+            if (out) { out.scrollTop = out.scrollHeight; }
+        """
+            )
+        )
+
+    async def handle_question(query):
+        submit_button.disabled = True
+
+        if hasattr(handle_question, "call_count"):
+            chat_history.append_stdout("─" * 50 + "\n\n")
+        else:
+            handle_question.call_count = 0
+        handle_question.call_count += 1
+
         timestamp = datetime.now().strftime("%H:%M")
-        with chat_history:
-            if role == "user":
-                print(f"\n[{timestamp}] You: {content}")
-            else:
-                print(f"\n[{timestamp}] Assistant: {content}")
-                if metadata:
-                    if metadata.get("elapsed"):
-                        print(f"\nTook {metadata['elapsed']:.2f}s", end="")
-                    if metadata.get("courses_found"):
-                        print(f" | {metadata['courses_found']} courses found", end="")
-                    print()
+        chat_history.append_stdout(f"[{timestamp}] You: {query}\n\n")
+        chat_history.append_stdout(f"[{timestamp}] Assistant: Thinking...\n\n")
 
-    async def handle_send(_=None):
-        """Handle send button click or enter key."""
-        query = input_field.value.strip()
-        if not query:
-            return
-
-        # Clear input
-        input_field.value = ""
-
-        # Show user message
-        add_message("user", query)
-
-        # Show thinking indicator
-        with chat_history:
-            print("\nAssistant: Thinking...")
-
-        # Get response
         try:
-            import asyncio
             response = await send_callback(query)
 
-            # Clear thinking indicator by adding response
             if isinstance(response, dict):
-                text = response.get("text", str(response))
-                metadata = {k: v for k, v in response.items() if k != "text"}
-            else:
-                text = str(response)
-                metadata = None
+                chat_history.append_stdout(f"{response.get('text', response)}\n\n")
+                status_parts = []
 
-            # Clear the "Thinking..." and show actual response
-            chat_history.clear_output(wait=True)
-            with chat_history:
-                # Re-render chat history would be complex, just show response
-                print(f"Response: {text}")
-                if metadata:
-                    if metadata.get("elapsed"):
-                        print(f"\nTook {metadata['elapsed']:.2f}s", end="")
-                    if metadata.get("courses_found"):
-                        print(f" | {metadata['courses_found']} courses found", end="")
-                    print()
+                if "elapsed" in response:
+                    status_parts.append(f"Took {response['elapsed']:.2f}s")
+                if "courses_found" in response:
+                    status_parts.append(f"{response['courses_found']} courses found")
+
+                if status_parts:
+                    chat_history.append_stdout(" | ".join(status_parts) + "\n\n")
+            else:
+                chat_history.append_stdout(f"{response}\n\n")
 
         except Exception as e:
-            with chat_history:
-                print(f"\nError: {e}")
+            chat_history.append_stdout(f"Error: {type(e).__name__}: {e}\n\n")
 
-    def on_button_click(_):
-        import asyncio
-        asyncio.get_event_loop().run_until_complete(handle_send())
+        finally:
+            submit_button.disabled = False
+            scroll_to_bottom()
 
-    def on_enter(change):
-        if change.get("type") == "change" and change.get("name") == "value":
-            return
-        import asyncio
-        asyncio.get_event_loop().run_until_complete(handle_send())
+    def on_submit(_):
+        query = question_input.value.strip()
+        if query:
+            question_input.value = ""
+            asyncio.get_event_loop().create_task(handle_question(query))
 
-    send_button.on_click(on_button_click)
-    input_field.on_submit(on_enter)
+    submit_button.on_click(on_submit)
+    question_input.on_submit(lambda _: on_submit(None))
 
-    # Display welcome message
-    with chat_history:
-        print("Welcome! Ask me anything about courses.")
-        print("This is Stage 1: Baseline RAG (no context engineering).")
-        print("-" * 50)
-
+    chat_history.append_stdout(
+        "Welcome! Ask me anything about courses.\n"
+        "This is Stage 1: Baseline RAG (no context engineering).\n\n"
+    )
     display(main_container)
 
