@@ -39,11 +39,20 @@ hierarchical_courses = []
 # Verbose mode flag
 _verbose = True
 
+# System instructions (can be overridden via set_system_instructions)
+_system_instructions = """You are a helpful course advisor assistant. Answer the student's question based on the course information provided."""
+
 
 def set_verbose(verbose: bool):
     """Set the verbose mode for logging."""
     global _verbose
     _verbose = verbose
+
+
+def set_system_instructions(instructions: str):
+    """Set custom system instructions for the agent."""
+    global _system_instructions
+    _system_instructions = instructions
 
 
 def initialize_nodes(manager: CourseManager):
@@ -196,8 +205,8 @@ def synthesize_node(state: AgentState) -> AgentState:
         # Initialize LLM
         llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
 
-        # Create prompt with raw context
-        prompt = f"""You are a helpful course advisor assistant. Answer the student's question based on the course information provided.
+        # Create prompt with raw context (uses _system_instructions which can be overridden)
+        prompt = f"""{_system_instructions}
 
 Course Information (raw data):
 {context}
