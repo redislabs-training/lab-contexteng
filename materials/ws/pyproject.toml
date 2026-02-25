@@ -65,10 +65,12 @@ dependencies = [
     # Jupyter notebooks
     "jupyter>=1.0.0",
     "ipykernel>=6.0.0",
+    "nest-asyncio>=1.5.0",
     # Embeddings (for notebooks)
     "sentence-transformers>=2.0.0",
     "langchain-huggingface>=0.1.0",
-    "pypdf",
+    # PDF and document processing
+    "pypdf>=3.0.0",
 ]
 
 [project.optional-dependencies]
