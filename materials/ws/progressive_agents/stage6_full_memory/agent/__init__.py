@@ -7,6 +7,7 @@ for multi-turn conversations. This is Stage 5 of the progressive learning path.
 Extends Stage 4 with Agent Memory Server integration.
 """
 
+from .chat_interface import get_session_info, new_session, start_chat
 from .setup import cleanup_courses, initialize_course_manager, setup_agent
 from .state import WorkflowMetrics, WorkflowState, initialize_metrics, initialize_state
 from .tools import optimize_course_text, search_courses, transform_course_to_text
@@ -30,6 +31,10 @@ __all__ = [
     "search_courses",
     "transform_course_to_text",
     "optimize_course_text",
+    # Chat interface
+    "start_chat",
+    "new_session",
+    "get_session_info",
 ]
 
 __version__ = "0.1.0"
