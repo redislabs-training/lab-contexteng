@@ -80,7 +80,7 @@ async def query_extracted_memories(
         elif "Connection" in error_msg or "timeout" in error_msg.lower():
             print("   • Check that Agent Memory Server (RAMS) is running")
             print("   • Verify AGENT_MEMORY_URL is configured correctly")
-            print("   • Default: http://localhost:8088")
+            print("   • Default: http://agent-memory-server:8000")
         else:
             print("   • Make sure you ran the multi-turn tests first")
             print("   • Verify student_id matches the one used in tests")
