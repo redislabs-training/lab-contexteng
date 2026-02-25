@@ -44,8 +44,8 @@ dependencies = [
     "langgraph-checkpoint>=1.0.0",
     "langgraph-checkpoint-redis>=0.1.0",
     # Redis and vector search
-    "redis>=6.0.0",
-    "redisvl>=0.8.0",
+    "redis>=7.1.0",
+    "redisvl>=0.13.0",
     # OpenAI
     "openai>=1.0.0",
     # Agent Memory Server client
