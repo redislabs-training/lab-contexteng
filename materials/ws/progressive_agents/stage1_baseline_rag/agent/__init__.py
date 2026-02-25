@@ -17,6 +17,7 @@ Students will see:
 Stage 2 will apply Section 2 context engineering techniques to fix these issues.
 """
 
+from .chat_interface import start_chat
 from .setup import cleanup_courses, load_courses_if_needed, setup_agent
 from .state import AgentState, initialize_state
 from .workflow import create_workflow
@@ -28,4 +29,6 @@ __all__ = [
     "create_workflow",
     "AgentState",
     "initialize_state",
+    # Chat interface
+    "start_chat",
 ]
