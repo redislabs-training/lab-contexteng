@@ -145,6 +145,9 @@ class HierarchicalCourseManager:
             True if successful
         """
         try:
+            # Ensure index exists before storing data
+            self._get_summary_index()
+
             # Store summary in vector index
             await self._store_summary(course.summary, course.id)
 
