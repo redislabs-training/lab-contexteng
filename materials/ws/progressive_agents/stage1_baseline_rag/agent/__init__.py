@@ -17,6 +17,15 @@ Students will see:
 Stage 2 will apply Section 2 context engineering techniques to fix these issues.
 """
 
+
+# Environment setup — must run before any submodule reads os.getenv()
+import os
+from dotenv import load_dotenv, find_dotenv
+
+load_dotenv(find_dotenv(usecwd=True))
+if os.getenv("LOCAL") == "true" and not os.getenv("OPENAI_API_KEY") and os.getenv("GENAI_WKSHP_OPENAI_API_KEY"):
+    os.environ["OPENAI_API_KEY"] = os.environ["GENAI_WKSHP_OPENAI_API_KEY"]
+
 from .chat_interface import start_chat
 from .setup import cleanup_courses, load_courses_if_needed, setup_agent
 from .state import AgentState, initialize_state

@@ -38,6 +38,15 @@ Command Line Tools:
 
 # Import core models (these have minimal dependencies)
 # Import memory client directly from agent_memory_client
+
+# Environment setup — must run before any submodule reads os.getenv()
+import os
+from dotenv import load_dotenv, find_dotenv
+
+load_dotenv(find_dotenv(usecwd=True))
+if os.getenv("LOCAL") == "true" and not os.getenv("OPENAI_API_KEY") and os.getenv("GENAI_WKSHP_OPENAI_API_KEY"):
+    os.environ["OPENAI_API_KEY"] = os.environ["GENAI_WKSHP_OPENAI_API_KEY"]
+
 from agent_memory_client import MemoryAPIClient as MemoryClient
 from agent_memory_client import MemoryClientConfig
 

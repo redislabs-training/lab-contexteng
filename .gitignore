@@ -1,12 +1,10 @@
 # NPM
-node_modules
-
-# Jupyter
-.ipynb_checkpoints/
-*.ipynb_checkpoints
+node_modules/
+package-lock.json
 
 # OS
-*.DS_Store
+.DS_Store
+**/.DS_Store
 Thumbs.db
 .vscode
 
@@ -23,8 +21,37 @@ redisinsight/db/*.log
 redisinsight/db/*.log.*
 **/*.zip
 !redisgears.linux-bionic-x64.1.0.7.zip
-__pycache__
+__pycache__/
+**/__pycache__/
 *.iml
+*.pyc
 
-# Comparison documentation (local analysis only)
+# Jupyter
+**/.ipynb_checkpoints/
+
+# IDE
+.idea/
+.vscode/
+
+# Local scratch / analysis notes
+*.md.bak
 comparison/
+nitin_docs/
+ANALYSIS_SUMMARY.md
+CHAT_INTERFACE_*.md
+FORMATTING_FIXES.md
+MEMORY_FIX_SUMMARY.md
+NOTEBOOK_EXECUTION_*.md
+PROGRESSIVE_AGENTS_*.md
+QUICK_START_*.md
+STAGE6_NOTEBOOK_STATUS.md
+TEST_STAGE6_README.md
+UNIVERSITY_NOTEBOOKS_GUIDE.md
+memory_workshop_rework.md
+notebook_analysis.md
+workshop_missing_features.md
+workshop_vs_university_comparison.md
+test_stage6_interactive.ipynb
+
+# Secrets / local config
+.env
