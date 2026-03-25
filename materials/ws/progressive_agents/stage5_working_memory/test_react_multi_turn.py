@@ -119,10 +119,78 @@ async def main():
     await test_follow_up_questions()
     await test_comparison_across_turns()
     await test_context_accumulation()
-    
+
     print("\n" + "=" * 80)
     print("ALL MULTI-TURN TESTS COMPLETE")
     print("=" * 80)
+
+
+async def run_tests() -> list:
+    """
+    Run multi-turn conversation tests through the full Stage 5 workflow.
+
+    Uses the working-memory-enabled agent so that RAMS stores each turn and
+    automatically extracts long-term facts in the background.
+
+    Returns:
+        List of session IDs used during the test run (for compression analysis).
+    """
+    import uuid
+    from agent import setup_agent, create_workflow, run_agent_async
+
+    print("Setting up Stage 5 agent for multi-turn tests...")
+    course_manager, _ = await setup_agent(auto_load_courses=True)
+    workflow = create_workflow(course_manager)
+
+    student_id = "test_user"
+    session_ids: list = []
+
+    conversations = [
+        {
+            "name": "Pronoun Resolution",
+            "turns": [
+                "What is CS002?",
+                "What are the prerequisites for it?",
+                "Tell me more about the syllabus",
+            ],
+        },
+        {
+            "name": "Follow-up Questions",
+            "turns": [
+                "Tell me about machine learning courses",
+                "Which one is best for beginners?",
+                "What are the prerequisites for that course?",
+            ],
+        },
+        {
+            "name": "Comparison Across Turns",
+            "turns": [
+                "What is CS001?",
+                "What is CS002?",
+                "Which one should I take first?",
+            ],
+        },
+    ]
+
+    for conv in conversations:
+        session_id = str(uuid.uuid4())
+        session_ids.append(session_id)
+        print(f"\n{'=' * 70}")
+        print(f"CONVERSATION: {conv['name']}  (session={session_id[:8]}...)")
+        print("=" * 70)
+
+        for i, query in enumerate(conv["turns"], 1):
+            print(f"\nTurn {i}: {query}")
+            result = await run_agent_async(
+                workflow, query, session_id=session_id, student_id=student_id
+            )
+            answer = result.get("final_response", result.get("response", ""))
+            print(f"Answer: {str(answer)[:200]}")
+
+    print(f"\n{'=' * 70}")
+    print(f"ALL MULTI-TURN TESTS COMPLETE  ({len(session_ids)} sessions)")
+    print("=" * 70)
+    return session_ids
 
 
 if __name__ == "__main__":

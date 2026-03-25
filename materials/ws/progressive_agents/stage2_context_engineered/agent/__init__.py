@@ -23,6 +23,15 @@ Students will see:
 - Clear ROI on context engineering
 """
 
+
+# Environment setup — must run before any submodule reads os.getenv()
+import os
+from dotenv import load_dotenv, find_dotenv
+
+load_dotenv(find_dotenv(usecwd=True))
+if os.getenv("LOCAL") == "true" and not os.getenv("OPENAI_API_KEY") and os.getenv("GENAI_WKSHP_OPENAI_API_KEY"):
+    os.environ["OPENAI_API_KEY"] = os.environ["GENAI_WKSHP_OPENAI_API_KEY"]
+
 from .context_engineering import (
     format_courses_for_llm,
     optimize_course_text,

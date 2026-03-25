@@ -7,6 +7,15 @@ and context engineering techniques. This is Stage 3 of the progressive learning 
 Adapted from the caching-agent architecture with CourseManager integration.
 """
 
+
+# Environment setup — must run before any submodule reads os.getenv()
+import os
+from dotenv import load_dotenv, find_dotenv
+
+load_dotenv(find_dotenv(usecwd=True))
+if os.getenv("LOCAL") == "true" and not os.getenv("OPENAI_API_KEY") and os.getenv("GENAI_WKSHP_OPENAI_API_KEY"):
+    os.environ["OPENAI_API_KEY"] = os.environ["GENAI_WKSHP_OPENAI_API_KEY"]
+
 from .setup import cleanup_courses, initialize_course_manager, setup_agent
 from .state import WorkflowMetrics, WorkflowState, initialize_metrics
 from .tools import optimize_course_text, search_courses, transform_course_to_text
