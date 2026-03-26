@@ -55,3 +55,6 @@ test_stage6_interactive.ipynb
 
 # Secrets / local config
 .env
+
+# python
+.venv
