@@ -121,12 +121,16 @@ def setup_agent(
         import asyncio
 
         try:
-            loop = asyncio.get_event_loop()
+            loop = asyncio.get_running_loop()
+            # Already inside a running loop (e.g. Jupyter/ipykernel on PS Portal)
+            import nest_asyncio
+            nest_asyncio.apply()
+            courses_loaded = loop.run_until_complete(load_courses_if_needed(course_manager))
         except RuntimeError:
+            # No running loop — safe to create one
             loop = asyncio.new_event_loop()
             asyncio.set_event_loop(loop)
-
-        courses_loaded = loop.run_until_complete(load_courses_if_needed(course_manager))
+            courses_loaded = loop.run_until_complete(load_courses_if_needed(course_manager))
         logger.info(f"✅ {courses_loaded} courses available")
 
     # Initialize nodes with course manager
