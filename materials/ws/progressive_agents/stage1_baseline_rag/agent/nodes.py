@@ -22,7 +22,6 @@ from langchain_openai import ChatOpenAI
 # Suppress httpx INFO logs
 logging.getLogger("httpx").setLevel(logging.WARNING)
 from langchain_core.messages import HumanMessage
-
 from redis_context_course import CourseManager
 from redis_context_course.hierarchical_context import RawContextAssembler
 from redis_context_course.hierarchical_models import HierarchicalCourse
@@ -68,7 +67,8 @@ def initialize_nodes(manager: CourseManager):
     # Load hierarchical courses with full syllabi
     try:
         data_path = (
-            Path(__file__).parent.parent.parent / "src"
+            Path(__file__).parent.parent.parent.parent
+            / "src"
             / "redis_context_course"
             / "data"
             / "hierarchical"

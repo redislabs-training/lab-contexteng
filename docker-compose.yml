@@ -79,7 +79,9 @@ services:
       #volumes:
       #- ./postgres_data:/var/lib/postgresql/data
   litellm:
-    image: ghcr.io/berriai/litellm:main-v1.68.0-stable
+    build:
+      context: https://github.com/BerriAI/litellm/archive/57e07bddd34185934893de3ad74583ba119ed67d.zip
+      dockerfile: Dockerfile
     container_name: litellm
     environment:
       LITELLM_MASTER_KEY: ${LITELLM_MASTER_KEY}
