@@ -79,7 +79,7 @@ services:
       #volumes:
       #- ./postgres_data:/var/lib/postgresql/data
   litellm:
-    image: ghcr.io/berriai/litellm:main-v1.82.6
+    image: ghcr.io/berriai/litellm:main-v1.68.0-stable
     container_name: litellm
     environment:
       LITELLM_MASTER_KEY: ${LITELLM_MASTER_KEY}
