@@ -19,10 +19,7 @@ from langchain_core.tools import tool
 from pydantic import BaseModel, Field
 from redis_context_course import CourseManager
 from redis_context_course.hierarchical_context import HierarchicalContextAssembler
-from redis_context_course.hierarchical_models import (
-    CourseSummary,
-    HierarchicalCourse,
-)
+from redis_context_course.hierarchical_models import CourseSummary, HierarchicalCourse
 from redis_context_course.models import Course
 
 # Configure logger
@@ -47,7 +44,8 @@ def initialize_tools(manager: CourseManager):
     # Load hierarchical courses with full syllabi
     try:
         data_path = (
-            Path(__file__).parent.parent.parent / "src"
+            Path(__file__).parent.parent.parent.parent
+            / "src"
             / "redis_context_course"
             / "data"
             / "hierarchical"
@@ -216,11 +214,11 @@ def search_courses_sync(
                     format=basic_course.format,
                     instructor=basic_course.instructor,
                     short_description=basic_course.description[:200],
-                    prerequisite_codes=[
-                        p.course_code for p in basic_course.prerequisites
-                    ]
-                    if basic_course.prerequisites
-                    else [],
+                    prerequisite_codes=(
+                        [p.course_code for p in basic_course.prerequisites]
+                        if basic_course.prerequisites
+                        else []
+                    ),
                     tags=[],
                 )
                 summaries.append(summary)
@@ -316,11 +314,11 @@ async def search_courses(
                     format=basic_course.format,
                     instructor=basic_course.instructor,
                     short_description=basic_course.description[:200],
-                    prerequisite_codes=[
-                        p.course_code for p in basic_course.prerequisites
-                    ]
-                    if basic_course.prerequisites
-                    else [],
+                    prerequisite_codes=(
+                        [p.course_code for p in basic_course.prerequisites]
+                        if basic_course.prerequisites
+                        else []
+                    ),
                     tags=[],
                 )
                 summaries.append(summary)

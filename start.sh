@@ -30,6 +30,9 @@ else
   echo "Copied ./all to ./dist/"
 fi
 
+# Copy doc assets (e.g. redis_logo.png) into the served static site
+cp -r ./doc/ ./dist/client/
+
 docker-compose up -d --scale jupyter=0 --scale docs=0
 
 echo "Waiting for litellm to be ready (healthcheck)..."
