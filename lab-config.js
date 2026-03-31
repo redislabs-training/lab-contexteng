@@ -3,50 +3,22 @@ export const LAB = String(process.env.LAB_MODE ?? '').toLowerCase().trim();
 
 export const LAB_CONFIG = {
     default: {
-        title: 'Context Engineering with Redis & LangChain',
+        title: 'LLM Connection Test',
         hero: {
-            tagline: 'Context Engineering with Redis & LangChain',
-            subtitle: 'Engineer every layer of context as you evolve a course advisor agent from baseline RAG to a full agent',
-            homeLink: '/intro/welcome/'
+            tagline: 'LLM Connection Test',
+            subtitle: 'Click the button below to test LiteLLM proxy connectivity',
+            homeLink: '/'
         },
-        sidebar: [
-            {
-                label: 'Introduction',
-                items: [
-                    'intro/welcome',
-                    'intro/getting-started',
-                ]
-            },
-            {
-                label: 'Wrap up',
-                items: [
-                    'wrap-up/finish-lab'
-                ]
-            }
-        ]
+        sidebar: []
     },
     ws: {
-        title: 'Redis Workshop: Context Engineering',
+        title: 'LLM Connection Test',
         hero: {
-            tagline: 'Context Engineering Workshop with Redis & LangChain',
-            subtitle: 'Engineer every layer of context as you evolve a course advisor agent from baseline RAG to a full agent',
-            homeLink: '/intro-ws/welcome/'
+            tagline: 'LLM Connection Test',
+            subtitle: 'Click the button below to test LiteLLM proxy connectivity',
+            homeLink: '/'
         },
-        sidebar: [
-            {
-                label: 'Introduction',
-                items: [
-                    'intro-ws/welcome',
-                    'intro-ws/getting-started',
-                ]
-            },
-            {
-                label: 'Wrap up',
-                items: [
-                    'wrap-up-ws/finish-lab'
-                ]
-            }
-        ]
+        sidebar: []
     }
 };
 

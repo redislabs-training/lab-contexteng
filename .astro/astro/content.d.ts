@@ -159,6 +159,20 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
+"intro-ws/getting-started.mdx": {
+	id: "intro-ws/getting-started.mdx";
+  slug: "intro-ws/getting-started";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"intro-ws/welcome.mdx": {
+	id: "intro-ws/welcome.mdx";
+  slug: "intro-ws/welcome";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
 "intro/getting-started.mdx": {
 	id: "intro/getting-started.mdx";
   slug: "intro/getting-started";
@@ -169,6 +183,13 @@ declare module 'astro:content' {
 "intro/welcome.mdx": {
 	id: "intro/welcome.mdx";
   slug: "intro/welcome";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"wrap-up-ws/finish-lab.mdx": {
+	id: "wrap-up-ws/finish-lab.mdx";
+  slug: "wrap-up-ws/finish-lab";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">
