@@ -1,25 +1,29 @@
 // Toggle Lab Mode
-export const LAB = String(process.env.LAB_MODE ?? '').toLowerCase().trim();
-
 export const LAB_CONFIG = {
     default: {
-        title: 'LLM Connection Test',
+        title: 'Context Engineering with Redis & LangChain',
         hero: {
-            tagline: 'LLM Connection Test',
-            subtitle: 'Click the button below to test LiteLLM proxy connectivity',
-            homeLink: '/'
+            tagline: 'Context Engineering with Redis & LangChain',
+            subtitle: 'Engineer every layer of context as you evolve a course advisor agent from baseline RAG to a full agent',
+            homeLink: '/intro/welcome/'
         },
-        sidebar: []
-    },
-    ws: {
-        title: 'LLM Connection Test',
-        hero: {
-            tagline: 'LLM Connection Test',
-            subtitle: 'Click the button below to test LiteLLM proxy connectivity',
-            homeLink: '/'
-        },
-        sidebar: []
+        sidebar: [
+            {
+                label: 'Introduction',
+                items: [
+                    'intro/welcome',
+                    'intro/getting-started',
+                ]
+            },
+            {
+                label: 'Wrap up',
+                items: [
+                    'wrap-up/finish-lab'
+                ]
+            }
+        ]
     }
 };
 
-export const config = LAB_CONFIG[LAB] || LAB_CONFIG.default;
+export const config = LAB_CONFIG.default;
+

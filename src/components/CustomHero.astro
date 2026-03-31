@@ -140,7 +140,7 @@ const heroData = config.hero;
         <!-- Logo/Badge -->
         <div class="logo">
             <img
-                src="doc/assets/redis_logo.png"
+                src="/assets/redis_logo.png"
                 alt="Redis University Lab"
                 width="23%"
             />
@@ -152,49 +152,22 @@ const heroData = config.hero;
         <!-- Subtitle -->
         <p class="subtitle">{heroData.subtitle}</p>
 
-        <!-- Test LLM Button -->
-        <button id="test-btn" class="cta-button hero-cta">
-            Test LLM Connection
-        </button>
-        <div id="result" style="margin-top: 2rem; padding: 1rem; white-space: pre-wrap; text-align: left; max-width: 600px; margin-left: auto; margin-right: auto;"></div>
+        <!-- CTA Button -->
+        <a href={heroData.homeLink} class="cta-button hero-cta">
+            Get Started
+            <svg
+                class="arrow-icon"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            >
+                <path d="M5 12h14"></path>
+                <path d="m12 5 7 7-7 7"></path>
+            </svg>
+        </a>
     </div>
 </div>
-
-<script>
-document.getElementById('test-btn')?.addEventListener('click', async function() {
-  const btn = document.getElementById('test-btn') as HTMLButtonElement;
-  const result = document.getElementById('result')!;
-  
-  btn.disabled = true;
-  btn.textContent = 'Testing...';
-  result.innerHTML = '';
-  
-  try {
-    const response = await fetch('http://localhost:4000/v1/chat/completions', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages: [{ role: 'user', content: 'Say "Hello! Connection successful." in exactly those words.' }],
-        max_tokens: 50
-      })
-    });
-    
-    const data = await response.json();
-    
-    if (data.choices && data.choices[0]) {
-      const msg = data.choices[0].message.content;
-      result.innerHTML = '<div style="color: #10a37f; font-size: 1.5rem;">✅ Success!</div><div style="margin-top: 1rem; background: #1a1a1a; padding: 1rem; border-radius: 8px; color: #fff;"><strong>Model:</strong> ' + data.model + '<br/><strong>Response:</strong> ' + msg + '</div>';
-    } else if (data.error) {
-      result.innerHTML = '<div style="color: #ef4444;">❌ Error: ' + (data.error.message || JSON.stringify(data.error)) + '</div>';
-    } else {
-      result.innerHTML = '<div style="color: #ef4444;">❌ Unexpected response: ' + JSON.stringify(data) + '</div>';
-    }
-  } catch (err: any) {
-    result.innerHTML = '<div style="color: #ef4444;">❌ Request failed: ' + err.message + '</div>';
-  }
-  
-  btn.disabled = false;
-  btn.textContent = 'Test LLM Connection';
-});
-</script>
