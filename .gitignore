@@ -1,26 +1,9 @@
-# NPM
-node_modules
-
-# Jupyter
-.ipynb_checkpoints/
-*.ipynb_checkpoints
-
 # OS
 *.DS_Store
-Thumbs.db
 .vscode
 
-# Copied from AI Lab
-dist/
-code/**/.settings
-code/**/target
-.classpath
+# Secrets
+vertex_sa.json
+
+# Logs
 *.log
-builds
-nginx.conf
-redisinsight/db/*.log
-redisinsight/db/*.log.*
-**/*.zip
-!redisgears.linux-bionic-x64.1.0.7.zip
-__pycache__
-*.iml

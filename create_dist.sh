@@ -1,11 +1,4 @@
-export LAB_MODE=ws
-npm run build
-cp -r ./doc/ ./dist/client/
-cp -r ./dist/ ./ws/
-rm -rf ./dist
-
-unset LAB_MODE
-npm run build
-cp -r ./doc/ ./dist/client/
-cp -r ./dist/ ./all/
-rm -rf ./dist
+# Static index.html - just copy to ws/ and all/
+mkdir -p ./ws/client ./all/client
+cp -r ./dist/client/* ./ws/client/
+cp -r ./dist/client/* ./all/client/

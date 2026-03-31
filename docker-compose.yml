@@ -1,56 +1,5 @@
 version: '3'
 services:
-  redis:
-    image: redis:8.0.0
-    container_name: redis
-    restart: always
-
-  redis-insight:
-    image: redislabs/redisinsight:2.68
-    container_name: redis-insight
-    ports:
-      - "5540:5540"
-    volumes:
-      - ./redisinsight/db/redisinsight.db:/data/redisinsight.db
-    restart: always
-
-  jupyter:
-    container_name: jupyter
-    ports:
-      - "10889:8888"
-    volumes:
-      - ./jupyter-config/jupyter_server_config.py:/home/jovyan/.jupyter/jupyter_server_config.py  
-      - ./materials/${MATERIALS_PATH:-university}:/home/jovyan/work/materials
-      - ./notebook-config/custom.css:/home/jovyan/.jupyter/custom/custom.css
-      - ./notebook-config/overrides.json:/opt/conda/share/jupyter/lab/settings/overrides.json
-    environment:
-      - JUPYTER_ENABLE_LAB=yes
-      - JUPYTER_PASSWORD=trainee
-      - OPENAI_API_KEY=${LITELLM_API_KEY}
-      - OPENAI_API_BASE=http://litellm:4000
-      - REDIS_HOST=redis
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8888"]
-      interval: 5s
-      timeout: 10s
-      retries: 20 
-    build:
-      context: .
-    restart: always
-
-  agent-memory-server:
-    image: ghcr.io/redis/agent-memory-server:0.12.3
-    container_name: agent-memory-server
-    environment:
-      OPENAI_API_KEY: ${GENAI_WKSHP_OPENAI_API_KEY}
-      #   - OPENAI_API_BASE=http://litellm:4000
-      REDIS_URL: redis://redis:6379
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8088/v1/health"]
-      interval: 5s
-      timeout: 10s
-      retries: 20 
-
   docs:
     image: httpd:2.4.63
     container_name: docs
@@ -64,8 +13,9 @@ services:
       - './dist/client:/usr/local/apache2/htdocs/'
       - './httpd.conf:/usr/local/apache2/conf/httpd.conf'
     depends_on:
-      jupyter:
-        condition: service_healthy 
+      litellm:
+        condition: service_started
+
   postgres:
     image: postgres:latest
     container_name: postgres
@@ -74,8 +24,7 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_DB: litellm
       POSTGRES_HOST_AUTH_METHOD: trust
-      #volumes:
-      #- ./postgres_data:/var/lib/postgresql/data
+
   litellm:
     image: ghcr.io/berriai/litellm:main-v1.68.0-stable
     container_name: litellm

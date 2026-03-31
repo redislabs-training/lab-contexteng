@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LLM Connection Test</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #091A23;
+      color: #fff;
+    }
+    .container {
+      text-align: center;
+      padding: 2rem;
+      max-width: 600px;
+    }
+    .logo {
+      margin-bottom: 2rem;
+    }
+    .logo img {
+      max-width: 200px;
+    }
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      font-weight: 500;
+    }
+    p {
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+      opacity: 0.8;
+    }
+    button {
+      padding: 1rem 2.5rem;
+      font-size: 1.1rem;
+      cursor: pointer;
+      background: #FF4438;
+      color: white;
+      border: 1px solid #D1281E;
+      border-radius: 8px;
+      transition: background 0.2s;
+    }
+    button:hover {
+      background: #E4291E;
+    }
+    button:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+    #result {
+      margin-top: 2rem;
+      text-align: left;
+    }
+    .success { color: #10a37f; font-size: 1.5rem; }
+    .error { color: #ef4444; }
+    .response-box {
+      margin-top: 1rem;
+      background: #1a1a1a;
+      padding: 1rem;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">
+      <img src="doc/assets/redis_logo.png" alt="Redis">
+    </div>
+    <h1>LLM Connection Test</h1>
+    <p>Click the button below to test LiteLLM proxy connectivity</p>
+    <button id="test-btn">Test LLM Connection</button>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    document.getElementById('test-btn').addEventListener('click', async function() {
+      const btn = document.getElementById('test-btn');
+      const result = document.getElementById('result');
+      
+      btn.disabled = true;
+      btn.textContent = 'Testing...';
+      result.innerHTML = '';
+      
+      try {
+        const response = await fetch('http://localhost:4000/v1/chat/completions', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model: 'gpt-4o-mini',
+            messages: [{ role: 'user', content: 'Say "Hello! Connection successful." in exactly those words.' }],
+            max_tokens: 50
+          })
+        });
+        
+        const data = await response.json();
+        
+        if (data.choices && data.choices[0]) {
+          const msg = data.choices[0].message.content;
+          result.innerHTML = '<div class="success">✅ Success!</div><div class="response-box"><strong>Model:</strong> ' + data.model + '<br><strong>Response:</strong> ' + msg + '</div>';
+        } else if (data.error) {
+          result.innerHTML = '<div class="error">❌ Error: ' + (data.error.message || JSON.stringify(data.error)) + '</div>';
+        } else {
+          result.innerHTML = '<div class="error">❌ Unexpected response: ' + JSON.stringify(data) + '</div>';
+        }
+      } catch (err) {
+        result.innerHTML = '<div class="error">❌ Request failed: ' + err.message + '</div>';
+      }
+      
+      btn.disabled = false;
+      btn.textContent = 'Test LLM Connection';
+    });
+  </script>
+</body>
+</html>
