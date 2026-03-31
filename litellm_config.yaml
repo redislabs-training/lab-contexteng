@@ -1,7 +1,9 @@
 general_settings:
-  allow_origins: ["*"]
+  master_key: null
+  allow_user_auth: false
 
 litellm_settings:
+  drop_params: true
   vertex_project: "redislabs-sa-training-services" # Your Project ID
   vertex_location: "us-east1" # proj location
 
