@@ -1,4 +1,5 @@
 litellm_settings:
+litellm_settings:
   vertex_project: "redislabs-sa-training-services" # Your Project ID
   vertex_location: "us-east1" # proj location
 

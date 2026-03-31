@@ -2,11 +2,13 @@
 
 : ${DOMAIN?"Please provide domain in DOMAIN env variable. For localhost use 'nip.io': 'export DOMAIN=\"nip.io\"'"}
 : ${HOSTNAME?"Please provide vm hostname HOSTNAME env variable. For localhost use '127.0.0.1': 'export HOSTNAME=\"127.0.0.1\"'"}
+: ${GENAI_WKSHP_OPENAI_API_KEY?"Please provide GENAI_WKSHP_OPENAI_API_KEY env variable with your OpenAI API key"}
 
 export DOMAIN=$DOMAIN
 export HOSTNAME=$HOSTNAME
 export HOST_IP=$(hostname -I | awk '{print $1}')
 export LITELLM_MASTER_KEY=sk-super-secret-key-for-ps
+export GENAI_WKSHP_OPENAI_API_KEY=$GENAI_WKSHP_OPENAI_API_KEY
 
 # Handle Vertex SA key if provided
 if [[ -n $VERTEX_SA_KEY ]]; then
