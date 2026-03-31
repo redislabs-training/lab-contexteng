@@ -17,7 +17,6 @@ code/**/target
 .classpath
 *.log
 builds
-index.html
 nginx.conf
 redisinsight/db/*.log
 redisinsight/db/*.log.*
